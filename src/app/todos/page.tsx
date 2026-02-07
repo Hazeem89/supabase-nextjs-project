@@ -3,10 +3,10 @@ import { redirect } from "next/navigation";
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import ProfileForm from './ProfileForm';
-import { getProfile } from './actions';
+import TodoList from '@/components/todos/TodoList';
+import { getTodos } from './actions';
 
-export default async function ProfilePage() {
+export default async function TodosPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -14,24 +14,22 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  const { data: profile, error } = await getProfile();
+  const { data: todos, error } = await getTodos();
 
   return (
-    <Container maxWidth="sm" sx={{ py: 4 }}>
+    <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-        Profil
+        Att göra
       </Typography>
       <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-        Din kontoinformation
+        Hantera dina uppgifter
       </Typography>
 
-      <Paper elevation={2} sx={{ p: 4 }}>
+      <Paper elevation={2} sx={{ p: 3 }}>
         {error ? (
           <Typography color="error">{error}</Typography>
-        ) : profile ? (
-          <ProfileForm profile={profile} userEmail={user.email || ''} />
         ) : (
-          <Typography>Kunde inte ladda profil</Typography>
+          <TodoList initialTodos={todos || []} />
         )}
       </Paper>
     </Container>

@@ -1,29 +1,41 @@
+"use client";
+
 import Link from "next/link";
 import { LoginForm } from "./login-form";
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import MuiLink from '@mui/material/Link';
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-      <div className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-md dark:bg-zinc-900">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          minHeight: 'calc(100vh - 8rem)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          py: 4,
+        }}
+      >
+        <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
+          <Typography variant="h5" component="h1" align="center" sx={{ fontWeight: 'bold', mb: 1 }}>
             Logga in
-          </h1>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
             Ange din e-post och lösenord
-          </p>
-        </div>
-        <LoginForm />
-        <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-          Har du inget konto?{" "}
-          <Link
-            href="/signup"
-            className="font-medium text-blue-600 hover:text-blue-500"
-          >
-            Registrera dig
-          </Link>
-        </p>
-      </div>
-    </div>
+          </Typography>
+          <LoginForm />
+          <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 3 }}>
+            Har du inget konto?{' '}
+            <MuiLink component={Link} href="/signup" underline="hover">
+              Registrera dig
+            </MuiLink>
+          </Typography>
+        </Paper>
+      </Box>
+    </Container>
   );
 }
