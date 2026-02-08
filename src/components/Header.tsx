@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import ChecklistIcon from '@mui/icons-material/Checklist';
+import DarkModeToggle from './DarkModeToggle';
 
 export async function Header() {
   const supabase = await createClient();
@@ -24,6 +25,7 @@ export async function Header() {
           </Typography>
         </Link>
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <DarkModeToggle />
           {user ? (
             <>
               <Link href="/todos" style={{ textDecoration: 'none' }}>

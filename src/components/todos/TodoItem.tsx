@@ -22,12 +22,18 @@ interface TodoItemProps {
   disabled?: boolean;
 }
 
+const MAX_TODO_LENGTH = 200;
+
 export default function TodoItem({ todo, onToggle, onDelete, onEdit, disabled }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(todo.title);
 
+  const editError = editTitle.length > MAX_TODO_LENGTH
+    ? `Titel får vara max ${MAX_TODO_LENGTH} tecken`
+    : '';
+
   const handleSaveEdit = () => {
-    if (editTitle.trim() && editTitle !== todo.title) {
+    if (editTitle.trim() && editTitle !== todo.title && !editError) {
       onEdit(todo.id, editTitle.trim());
     }
     setIsEditing(false);
@@ -50,7 +56,7 @@ export default function TodoItem({ todo, onToggle, onDelete, onEdit, disabled }:
       secondaryAction={
         isEditing ? (
           <Box>
-            <IconButton onClick={handleSaveEdit} disabled={disabled} color="success">
+            <IconButton onClick={handleSaveEdit} disabled={disabled || !!editError || !editTitle.trim()} color="success">
               <CheckIcon />
             </IconButton>
             <IconButton onClick={handleCancelEdit} disabled={disabled}>
@@ -83,8 +89,10 @@ export default function TodoItem({ todo, onToggle, onDelete, onEdit, disabled }:
           size="small"
           value={editTitle}
           onChange={(e) => setEditTitle(e.target.value)}
+          error={!!editError}
+          helperText={editError || `${editTitle.length}/${MAX_TODO_LENGTH}`}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') handleSaveEdit();
+            if (e.key === 'Enter' && !editError) handleSaveEdit();
             if (e.key === 'Escape') handleCancelEdit();
           }}
           autoFocus

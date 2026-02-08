@@ -16,15 +16,21 @@ interface TodoListProps {
   initialTodos: Todo[];
 }
 
+const MAX_TODO_LENGTH = 200;
+
 export default function TodoList({ initialTodos }: TodoListProps) {
   const [todos, setTodos] = useState<Todo[]>(initialTodos);
   const [newTitle, setNewTitle] = useState('');
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
+  const titleError = newTitle.length > MAX_TODO_LENGTH
+    ? `Titel får vara max ${MAX_TODO_LENGTH} tecken`
+    : '';
+
   const handleAddTodo = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle.trim()) return;
+    if (!newTitle.trim() || titleError) return;
 
     setError(null);
     const formData = new FormData();
@@ -47,6 +53,8 @@ export default function TodoList({ initialTodos }: TodoListProps) {
       if (result.error) {
         setTodos((prev) => prev.filter((t) => t.id !== tempId));
         setError(result.error);
+      } else if (result.data) {
+        setTodos((prev) => prev.map((t) => (t.id === tempId ? result.data! : t)));
       }
     });
   };
@@ -103,12 +111,14 @@ export default function TodoList({ initialTodos }: TodoListProps) {
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           disabled={isPending}
+          error={!!titleError}
+          helperText={titleError || (newTitle ? `${newTitle.length}/${MAX_TODO_LENGTH}` : '')}
         />
         <Button
           type="submit"
           variant="contained"
           startIcon={isPending ? <CircularProgress size={20} color="inherit" /> : <AddIcon />}
-          disabled={isPending || !newTitle.trim()}
+          disabled={isPending || !newTitle.trim() || !!titleError}
           sx={{ minWidth: 140 }}
         >
           Lägg till
