@@ -3,6 +3,7 @@ export interface Profile {
   email: string;
   name: string | null;
   city: string | null;
+  avatar_url: string | null;
   last_sign_in_at: string | null;
   created_at: string;
 }
